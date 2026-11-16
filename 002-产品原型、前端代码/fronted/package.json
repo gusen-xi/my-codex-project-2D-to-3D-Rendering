@@ -1,0 +1,13 @@
+{
+  "name": "wuyin-space-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "无垠空间 · 平面图生成室内效果图网页原型",
+  "type": "module",
+  "scripts": {
+    "dev": "./启动网站.command",
+    "start": "./启动网站.command",
+    "test": "python3 -m unittest discover -s tests -v && node tests/test_space_controls.mjs",
+    "check": "node --check src/main.js && node --check src/workflow.js"
+  }
+}

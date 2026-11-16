@@ -1,0 +1,577 @@
+{
+  "b6811568-97c7-49a4-b304-dfe81131d0da": {
+    "prompt": [
+      0,
+      "b6811568-97c7-49a4-b304-dfe81131d0da",
+      {
+        "1": {
+          "class_type": "LoadImage",
+          "inputs": {
+            "image": "wuyin-plan.jpg"
+          },
+          "_meta": {
+            "title": "01 · 无垠住宅平面图"
+          }
+        },
+        "2": {
+          "class_type": "WuyinAnalyze",
+          "inputs": {
+            "consent": true,
+            "plan": [
+              "1",
+              0
+            ]
+          },
+          "_meta": {
+            "title": "02 · 自动识别结构"
+          }
+        }
+      },
+      {
+        "extra_pnginfo": {
+          "workflow": {
+            "last_node_id": 9,
+            "last_link_id": 10,
+            "nodes": [
+              {
+                "id": 1,
+                "type": "LoadImage",
+                "title": "01 · 无垠住宅平面图",
+                "pos": [
+                  40,
+                  160
+                ],
+                "size": [
+                  330,
+                  190
+                ],
+                "flags": {},
+                "order": 0,
+                "mode": 0,
+                "inputs": [],
+                "outputs": [
+                  {
+                    "name": "IMAGE",
+                    "type": "IMAGE",
+                    "links": [
+                      1,
+                      4
+                    ]
+                  },
+                  {
+                    "name": "MASK",
+                    "type": "MASK",
+                    "links": []
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "LoadImage"
+                },
+                "widgets_values": [
+                  "wuyin-plan.jpg",
+                  "image"
+                ]
+              },
+              {
+                "id": 2,
+                "type": "WuyinAnalyze",
+                "title": "02 · 自动识别结构",
+                "pos": [
+                  420,
+                  80
+                ],
+                "size": [
+                  330,
+                  190
+                ],
+                "flags": {},
+                "order": 1,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "plan",
+                    "type": "IMAGE",
+                    "link": 1
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "rooms_json",
+                    "type": "STRING",
+                    "links": [
+                      2
+                    ]
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinAnalyze"
+                },
+                "widgets_values": [
+                  false
+                ]
+              },
+              {
+                "id": 3,
+                "type": "WuyinConfirm",
+                "title": "03 · 人工核对与八向视角",
+                "pos": [
+                  800,
+                  80
+                ],
+                "size": [
+                  330,
+                  498
+                ],
+                "flags": {},
+                "order": 2,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "rooms_json",
+                    "type": "STRING",
+                    "link": 2
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "confirmed_space",
+                    "type": "WUYIN_SPACE",
+                    "links": [
+                      3,
+                      8
+                    ]
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinConfirm"
+                },
+                "widgets_values": [
+                  "客厅",
+                  "{\"x\":0.415,\"y\":0.06,\"w\":0.225,\"h\":0.425}",
+                  "沙发沿右侧，茶几居中，电视背景墙在左，上侧外窗。保留墙体、门窗、固定家具与主要布局。未标注尺寸，待补充。",
+                  "未知，不作为实测尺寸",
+                  "西北",
+                  "0.18,0.87",
+                  false
+                ]
+              },
+              {
+                "id": 4,
+                "type": "WuyinStyle",
+                "title": "04 · 风格与材质意向",
+                "pos": [
+                  1200,
+                  80
+                ],
+                "size": [
+                  330,
+                  238
+                ],
+                "flags": {},
+                "order": 3,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "space",
+                    "type": "WUYIN_SPACE",
+                    "link": 3
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "design",
+                    "type": "WUYIN_SPACE",
+                    "links": [
+                      5
+                    ]
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinStyle"
+                },
+                "widgets_values": [
+                  "现代简约",
+                  "黑白灰基调，低靠背模块沙发，黑色金属细节，通透自然光。"
+                ]
+              },
+              {
+                "id": 5,
+                "type": "WuyinGenerate",
+                "title": "05 · 平面图 → 室内透视图",
+                "pos": [
+                  1600,
+                  80
+                ],
+                "size": [
+                  330,
+                  210
+                ],
+                "flags": {},
+                "order": 4,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "plan",
+                    "type": "IMAGE",
+                    "link": 4
+                  },
+                  {
+                    "name": "design",
+                    "type": "WUYIN_SPACE",
+                    "link": 5
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "render",
+                    "type": "IMAGE",
+                    "links": [
+                      6,
+                      7
+                    ]
+                  },
+                  {
+                    "name": "job_id",
+                    "type": "STRING",
+                    "links": []
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinGenerate"
+                },
+                "widgets_values": [
+                  false
+                ]
+              },
+              {
+                "id": 6,
+                "type": "SaveImage",
+                "title": "06 · 保存首版效果图",
+                "pos": [
+                  2000,
+                  40
+                ],
+                "size": [
+                  330,
+                  190
+                ],
+                "flags": {},
+                "order": 5,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "images",
+                    "type": "IMAGE",
+                    "link": 6
+                  }
+                ],
+                "outputs": [],
+                "properties": {
+                  "Node name for S&R": "SaveImage"
+                },
+                "widgets_values": [
+                  "Wuyin/first-render"
+                ]
+              },
+              {
+                "id": 7,
+                "type": "WuyinSelection",
+                "title": "07 · 局部选区与修改要求",
+                "pos": [
+                  1200,
+                  630
+                ],
+                "size": [
+                  330,
+                  214
+                ],
+                "flags": {},
+                "order": 6,
+                "mode": 0,
+                "inputs": [],
+                "outputs": [
+                  {
+                    "name": "edit_region",
+                    "type": "WUYIN_EDIT",
+                    "links": [
+                      9
+                    ]
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinSelection"
+                },
+                "widgets_values": [
+                  "{\"x\":0.25,\"y\":0.45,\"w\":0.45,\"h\":0.4}",
+                  "将选区内家具面料改为米白色亚麻，保留家具位置、体量和其他物体。"
+                ]
+              },
+              {
+                "id": 8,
+                "type": "WuyinEdit",
+                "title": "08 · 蒙版编辑与像素合成",
+                "pos": [
+                  2000,
+                  530
+                ],
+                "size": [
+                  330,
+                  234
+                ],
+                "flags": {},
+                "order": 7,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "image",
+                    "type": "IMAGE",
+                    "link": 7
+                  },
+                  {
+                    "name": "space",
+                    "type": "WUYIN_SPACE",
+                    "link": 8
+                  },
+                  {
+                    "name": "edit_region",
+                    "type": "WUYIN_EDIT",
+                    "link": 9
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "edited_render",
+                    "type": "IMAGE",
+                    "links": [
+                      10
+                    ]
+                  },
+                  {
+                    "name": "job_id",
+                    "type": "STRING",
+                    "links": []
+                  }
+                ],
+                "properties": {
+                  "Node name for S&R": "WuyinEdit"
+                },
+                "widgets_values": [
+                  false
+                ]
+              },
+              {
+                "id": 9,
+                "type": "SaveImage",
+                "title": "09 · 保存局部修改版本",
+                "pos": [
+                  2400,
+                  530
+                ],
+                "size": [
+                  330,
+                  190
+                ],
+                "flags": {},
+                "order": 8,
+                "mode": 0,
+                "inputs": [
+                  {
+                    "name": "images",
+                    "type": "IMAGE",
+                    "link": 10
+                  }
+                ],
+                "outputs": [],
+                "properties": {
+                  "Node name for S&R": "SaveImage"
+                },
+                "widgets_values": [
+                  "Wuyin/local-edit"
+                ]
+              }
+            ],
+            "links": [
+              [
+                1,
+                1,
+                0,
+                2,
+                0,
+                "IMAGE"
+              ],
+              [
+                2,
+                2,
+                0,
+                3,
+                0,
+                "STRING"
+              ],
+              [
+                3,
+                3,
+                0,
+                4,
+                0,
+                "WUYIN_SPACE"
+              ],
+              [
+                4,
+                1,
+                0,
+                5,
+                0,
+                "IMAGE"
+              ],
+              [
+                5,
+                4,
+                0,
+                5,
+                1,
+                "WUYIN_SPACE"
+              ],
+              [
+                6,
+                5,
+                0,
+                6,
+                0,
+                "IMAGE"
+              ],
+              [
+                7,
+                5,
+                0,
+                8,
+                0,
+                "IMAGE"
+              ],
+              [
+                8,
+                3,
+                0,
+                8,
+                1,
+                "WUYIN_SPACE"
+              ],
+              [
+                9,
+                7,
+                0,
+                8,
+                2,
+                "WUYIN_EDIT"
+              ],
+              [
+                10,
+                8,
+                0,
+                9,
+                0,
+                "IMAGE"
+              ]
+            ],
+            "groups": [
+              {
+                "title": "A · 平面输入 / 识别 / 人工确认",
+                "bounding": [
+                  10,
+                  10,
+                  1140,
+                  600
+                ],
+                "color": "#48685d",
+                "font_size": 24
+              },
+              {
+                "title": "B · 风格约束 / 真实 API 生图",
+                "bounding": [
+                  1170,
+                  10,
+                  1180,
+                  550
+                ],
+                "color": "#596d82",
+                "font_size": 24
+              },
+              {
+                "title": "C · 局部蒙版 / 选区外像素保持",
+                "bounding": [
+                  1170,
+                  590,
+                  1600,
+                  430
+                ],
+                "color": "#8a7453",
+                "font_size": 24
+              }
+            ],
+            "config": {},
+            "extra": {
+              "ds": {
+                "scale": 0.45,
+                "offset": [
+                  30,
+                  30
+                ]
+              },
+              "wuyin": {
+                "model": "gpt-image-2 via imageStyle API",
+                "notes": "所有自定义节点均随包提供。未使用 FLUX 权重或未展开的封装节点。默认 consent / confirmed 均为 false；核对后手动启用。"
+              }
+            },
+            "version": 0.4
+          }
+        },
+        "create_time": 1794842091855
+      },
+      [
+        "2"
+      ]
+    ],
+    "outputs": {
+      "2": {
+        "text": [
+          "[{\"name\": \"客厅兼餐厅\", \"rect\": {\"x\": 0.405, \"y\": 0.065, \"w\": 0.375, \"h\": 0.54}, \"structure\": \"开放式公共空间，中部设沙发、茶几和座椅，右侧靠近厨房区域，周边可见墙体、门洞及固定柜体，北侧有窗户或阳台开口\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.48, \"y\": 0.82, \"angle\": 270.0}}, {\"name\": \"厨房\", \"rect\": {\"x\": 0.77, \"y\": 0.17, \"w\": 0.17, \"h\": 0.5}, \"structure\": \"沿右侧和上侧墙体布置橱柜、操作台、水槽、燃气灶及冰箱等固定设施，可见门洞连接公共区域\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.35, \"y\": 0.48, \"angle\": 0.0}}, {\"name\": \"卧室1\", \"rect\": {\"x\": 0.18, \"y\": 0.18, \"w\": 0.23, \"h\": 0.34}, \"structure\": \"房间内有双人床、床头柜、衣柜及窗户，入口位于右侧或右下侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.82, \"y\": 0.78, \"angle\": 225.0}}, {\"name\": \"卧室2\", \"rect\": {\"x\": 0.18, \"y\": 0.53, \"w\": 0.23, \"h\": 0.29}, \"structure\": \"房间内有双人床、床头柜及窗户或固定柜体，入口位于上侧或右上侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.82, \"y\": 0.18, \"angle\": 135.0}}, {\"name\": \"卧室3\", \"rect\": {\"x\": 0.78, \"y\": 0.18, \"w\": 0.16, \"h\": 0.24}, \"structure\": \"房间内有床铺、床头柜及固定收纳设施，靠外墙一侧可见窗户，入口位于下侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.5, \"y\": 0.82, \"angle\": 270.0}}, {\"name\": \"卧室4\", \"rect\": {\"x\": 0.71, \"y\": 0.66, \"w\": 0.22, \"h\": 0.31}, \"structure\": \"房间内有双人床、床头柜及衣柜，靠右侧外墙可见窗户，入口位于上侧或左上侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.72, \"y\": 0.18, \"angle\": 135.0}}, {\"name\": \"卫生间1\", \"rect\": {\"x\": 0.08, \"y\": 0.18, \"w\": 0.1, \"h\": 0.36}, \"structure\": \"可见洗手盆、洗衣机或设备柜及坐便器，靠外墙布置，入口连接室内通道\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.75, \"y\": 0.65, \"angle\": 180.0}}, {\"name\": \"卫生间2\", \"rect\": {\"x\": 0.08, \"y\": 0.54, \"w\": 0.1, \"h\": 0.35}, \"structure\": \"可见坐便器、洗手盆及独立浴缸或淋浴设施，靠左侧外墙布置\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.7, \"y\": 0.28, \"angle\": 90.0}}, {\"name\": \"卫生间3\", \"rect\": {\"x\": 0.42, \"y\": 0.59, \"w\": 0.1, \"h\": 0.2}, \"structure\": \"紧凑型卫生间，可见坐便器、洗手盆及淋浴区域，入口位于上侧或右侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.75, \"y\": 0.25, \"angle\": 180.0}}, {\"name\": \"卫生间4\", \"rect\": {\"x\": 0.55, \"y\": 0.59, \"w\": 0.1, \"h\": 0.2}, \"structure\": \"紧凑型卫生间，可见洗手盆、坐便器及淋浴设施，入口位于左侧或下侧\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.25, \"y\": 0.3, \"angle\": 0.0}}, {\"name\": \"玄关及过道\", \"rect\": {\"x\": 0.38, \"y\": 0.42, \"w\": 0.38, \"h\": 0.23}, \"structure\": \"连接各卧室、卫生间、厨房和客厅的室内交通空间，可见多处门洞、墙体及局部固定柜体\", \"dimensions\": \"未标注尺寸\", \"camera\": {\"x\": 0.5, \"y\": 0.5, \"angle\": 0.0}}]"
+        ]
+      }
+    },
+    "status": {
+      "status_str": "success",
+      "completed": true,
+      "messages": [
+        [
+          "execution_start",
+          {
+            "prompt_id": "b6811568-97c7-49a4-b304-dfe81131d0da",
+            "timestamp": 1794842091856
+          }
+        ],
+        [
+          "execution_cached",
+          {
+            "nodes": [],
+            "prompt_id": "b6811568-97c7-49a4-b304-dfe81131d0da",
+            "timestamp": 1794842091857
+          }
+        ],
+        [
+          "execution_success",
+          {
+            "prompt_id": "b6811568-97c7-49a4-b304-dfe81131d0da",
+            "timestamp": 1794842140137
+          }
+        ]
+      ]
+    },
+    "meta": {
+      "2": {
+        "node_id": "2",
+        "display_node": "2",
+        "parent_node": null,
+        "real_node_id": "2"
+      }
+    }
+  }
+}

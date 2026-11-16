@@ -1,0 +1,51 @@
+{
+  "status": "success",
+  "label": "真实 ComfyUI 执行成功",
+  "engine": "ComfyUI 0.45.0 / CPU + 外部图像 API",
+  "engine_commit": "e9afbccc2669677076feb08e52658f129cd8c12b",
+  "checked_at": "2026-11-16T15:25:06.592543+00:00",
+  "prompt_id": "7da8ca15-51a9-479e-8d33-d751c736c2b9",
+  "recognition_prompt_id": "b6811568-97c7-49a4-b304-dfe81131d0da",
+  "nodes": 9,
+  "links": 10,
+  "runs": [
+    {
+      "node": "6",
+      "label": "ComfyUI 首次生成",
+      "image": "/workflows/results/first-render.png",
+      "size": "1536 × 1024",
+      "sha256": "b67595acaf5f04e1bbfe31d200b409ac1fa1c7636c3c295167e1b3fddd1dc22c"
+    },
+    {
+      "node": "9",
+      "label": "ComfyUI 局部修改",
+      "image": "/workflows/results/local-edit.png",
+      "size": "1536 × 1024",
+      "sha256": "d908e84de4e8f28215daa7fa1d971379a0f1fc2de165de9a03f1b975f97bfe91"
+    }
+  ],
+  "jobs": [
+    {
+      "node": "5",
+      "job_id": "58442dbbbe694d1f8fc4ae0a22d192e4",
+      "seconds": 334.6,
+      "status": "completed"
+    },
+    {
+      "node": "8",
+      "job_id": "949ff01886004330b38136061007efa4",
+      "seconds": 142.02,
+      "status": "completed"
+    }
+  ],
+  "edit_rectangle": {
+    "x": 0.25,
+    "y": 0.45,
+    "w": 0.45,
+    "h": 0.4
+  },
+  "outside_selection_pixels_unchanged": true,
+  "summary": "真实 ComfyUI 引擎已完成结构识别、人工核对参数、首次生图、局部蒙版编辑和两次 SaveImage 保存。原始执行历史与输出文件可下载；选区外像素逐像素对比一致。",
+  "limitation": "通过外部 imageStyle API 生图；结构保持依靠图纸参考与提示约束，未通过几何精度验收，须人工核对。",
+  "history_sha256": "bc7305debda5eaea7f6dc889902db28e523e56d247ad59393478d46f6e030f19"
+}

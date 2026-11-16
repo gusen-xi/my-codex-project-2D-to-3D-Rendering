@@ -1,0 +1,131 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "wuyin-plan.jpg"
+    },
+    "_meta": {
+      "title": "01 · 无垠住宅平面图"
+    }
+  },
+  "2": {
+    "class_type": "WuyinAnalyze",
+    "inputs": {
+      "consent": false,
+      "plan": [
+        "1",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "02 · 自动识别结构"
+    }
+  },
+  "3": {
+    "class_type": "WuyinConfirm",
+    "inputs": {
+      "room": "客厅",
+      "rectangle": "{\"x\":0.415,\"y\":0.06,\"w\":0.225,\"h\":0.425}",
+      "structure": "沙发沿右侧，茶几居中，电视背景墙在左，上侧外窗。保留墙体、门窗、固定家具与主要布局。未标注尺寸，待补充。",
+      "height": "未知，不作为实测尺寸",
+      "direction": "东北",
+      "position": "0.18,0.87",
+      "confirmed": false,
+      "rooms_json": [
+        "2",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "03 · 人工核对与八向视角"
+    }
+  },
+  "4": {
+    "class_type": "WuyinStyle",
+    "inputs": {
+      "style": "现代简约",
+      "intent": "黑白灰基调，低靠背模块沙发，黑色金属细节，通透自然光。",
+      "space": [
+        "3",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "04 · 风格与材质意向"
+    }
+  },
+  "5": {
+    "class_type": "WuyinGenerate",
+    "inputs": {
+      "consent": false,
+      "plan": [
+        "1",
+        0
+      ],
+      "design": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "05 · 平面图 → 室内透视图"
+    }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "Wuyin/first-render",
+      "images": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "06 · 保存首版效果图"
+    }
+  },
+  "7": {
+    "class_type": "WuyinSelection",
+    "inputs": {
+      "rectangle": "{\"x\":0.25,\"y\":0.45,\"w\":0.45,\"h\":0.4}",
+      "instruction": "将选区内家具面料改为米白色亚麻，保留家具位置、体量和其他物体。"
+    },
+    "_meta": {
+      "title": "07 · 局部选区与修改要求"
+    }
+  },
+  "8": {
+    "class_type": "WuyinEdit",
+    "inputs": {
+      "consent": false,
+      "image": [
+        "5",
+        0
+      ],
+      "space": [
+        "3",
+        0
+      ],
+      "edit_region": [
+        "7",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "08 · 蒙版编辑与像素合成"
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "Wuyin/local-edit",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "09 · 保存局部修改版本"
+    }
+  }
+}

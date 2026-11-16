@@ -1,0 +1,67 @@
+[
+  {
+    "url": "/assets/reference-01.jpg",
+    "name": "客厅全景",
+    "room": "客厅"
+  },
+  {
+    "url": "/assets/reference-02.jpg",
+    "name": "客厅沙发区",
+    "room": "客厅"
+  },
+  {
+    "url": "/assets/reference-03.jpg",
+    "name": "客厅电视墙与过道",
+    "room": "客厅"
+  },
+  {
+    "url": "/assets/reference-04.jpg",
+    "name": "客厅吊椅与茶几",
+    "room": "客厅"
+  },
+  {
+    "url": "/assets/reference-05.jpg",
+    "name": "客厅电视墙与壁炉",
+    "room": "客厅"
+  },
+  {
+    "url": "/assets/reference-06.jpg",
+    "name": "厨房",
+    "room": "厨房"
+  },
+  {
+    "url": "/assets/reference-07.jpg",
+    "name": "书房书桌区",
+    "room": "书房"
+  },
+  {
+    "url": "/assets/reference-08.jpg",
+    "name": "餐厅餐桌与餐边柜",
+    "room": "餐厅"
+  },
+  {
+    "url": "/assets/reference-09.jpg",
+    "name": "主卧床铺与窗边",
+    "room": "主卧"
+  },
+  {
+    "url": "/assets/reference-10.jpg",
+    "name": "主卧梳妆台",
+    "room": "主卧"
+  },
+  {
+    "url": "/assets/reference-11.jpg",
+    "name": "主卧床头细节",
+    "room": "主卧"
+  },
+  {
+    "url": "/assets/reference-12.jpg",
+    "name": "主卧全景与衣柜",
+    "room": "主卧"
+  },
+  {
+    "url": "/assets/reference-13.jpg",
+    "name": "次卧床头",
+    "room": "次卧"
+  }
+]
