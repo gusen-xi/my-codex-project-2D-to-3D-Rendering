@@ -1,0 +1,38 @@
+[
+  {
+    "id": "wuyin",
+    "name": "无垠住宅项目",
+    "cover": "/assets/reference-01.jpg",
+    "description": "129 m² · 住宅全案 · 人工效果图"
+  },
+  {
+    "id": "rainforest-whale",
+    "name": "雨林的鲸",
+    "cover": "/assets/collections/rainforest-whale/reference-22.jpg",
+    "description": "住宅设计案例 · 室内空间与软装参考"
+  },
+  {
+    "id": "illusion-city",
+    "name": "幻城",
+    "cover": "/assets/collections/illusion-city/reference-08.jpg",
+    "description": "住宅设计案例 · 室内空间与软装参考"
+  },
+  {
+    "id": "fengming-bay",
+    "name": "中式凤鸣湾",
+    "cover": "/assets/collections/fengming-bay/reference-36.jpg",
+    "description": "住宅设计案例 · 室内空间与软装参考"
+  },
+  {
+    "id": "jinhui-city",
+    "name": "新中式金辉城",
+    "cover": "/assets/collections/jinhui-city/reference-07.jpg",
+    "description": "住宅设计案例 · 室内空间与软装参考"
+  },
+  {
+    "id": "heritage-courtyard",
+    "name": "中式传家合院",
+    "cover": "/assets/collections/heritage-courtyard/reference-37.jpg",
+    "description": "住宅设计案例 · 室内空间与软装参考"
+  }
+]

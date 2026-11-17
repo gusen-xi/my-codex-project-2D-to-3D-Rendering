@@ -5,9 +5,22 @@
   "description": "无垠空间 · 平面图生成室内效果图网页原型",
   "type": "module",
   "scripts": {
-    "dev": "./启动网站.command",
+    "dev": "vite",
     "start": "./启动网站.command",
-    "test": "python3 -m unittest discover -s tests -v && node tests/test_space_controls.mjs",
-    "check": "node --check src/main.js && node --check src/workflow.js"
+    "test": "python3 -m unittest discover -s tests -v && node tests/test_space_controls.mjs && node tests/test_workspace_state.mjs",
+    "check": "node --check src/main.js && node --check src/workflow.js",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0",
+    "@vitejs/plugin-react": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

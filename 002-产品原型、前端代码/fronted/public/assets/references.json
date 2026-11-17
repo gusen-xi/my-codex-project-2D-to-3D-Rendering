@@ -2,66 +2,1121 @@
   {
     "url": "/assets/reference-01.jpg",
     "name": "客厅全景",
-    "room": "客厅"
+    "room": "客厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-02.jpg",
     "name": "客厅沙发区",
-    "room": "客厅"
+    "room": "客厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-03.jpg",
     "name": "客厅电视墙与过道",
-    "room": "客厅"
+    "room": "客厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-04.jpg",
     "name": "客厅吊椅与茶几",
-    "room": "客厅"
+    "room": "客厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-05.jpg",
     "name": "客厅电视墙与壁炉",
-    "room": "客厅"
+    "room": "客厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-06.jpg",
     "name": "厨房",
-    "room": "厨房"
+    "room": "厨房",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-07.jpg",
     "name": "书房书桌区",
-    "room": "书房"
+    "room": "书房",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-08.jpg",
     "name": "餐厅餐桌与餐边柜",
-    "room": "餐厅"
+    "room": "餐厅",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-09.jpg",
     "name": "主卧床铺与窗边",
-    "room": "主卧"
+    "room": "主卧",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-10.jpg",
     "name": "主卧梳妆台",
-    "room": "主卧"
+    "room": "主卧",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-11.jpg",
     "name": "主卧床头细节",
-    "room": "主卧"
+    "room": "主卧",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-12.jpg",
     "name": "主卧全景与衣柜",
-    "room": "主卧"
+    "room": "主卧",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
   },
   {
     "url": "/assets/reference-13.jpg",
     "name": "次卧床头",
-    "room": "次卧"
+    "room": "次卧",
+    "collectionId": "wuyin",
+    "project": "无垠住宅项目",
+    "label": "人工参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-01.jpg",
+    "name": "卫生间洗手台与花卉墙纸",
+    "room": "卫生间",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-02.jpg",
+    "name": "粉色卧室床头与吊灯",
+    "room": "卧室",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-03.jpg",
+    "name": "粉色卧室床铺正景",
+    "room": "卧室",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-04.jpg",
+    "name": "卫生间洗手台侧景",
+    "room": "卫生间",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-05.jpg",
+    "name": "卫生间浴缸与窗边",
+    "room": "卫生间",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-06.jpg",
+    "name": "卫生间浴缸与绿植",
+    "room": "卫生间",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-07.jpg",
+    "name": "卫生间浴缸全景",
+    "room": "卫生间",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-08.jpg",
+    "name": "绿色卧室床尾与单椅",
+    "room": "卧室",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-09.jpg",
+    "name": "绿色卧室床头侧景",
+    "room": "卧室",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-10.jpg",
+    "name": "绿色卧室床铺全景",
+    "room": "卧室",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-11.jpg",
+    "name": "书房书桌与百叶窗",
+    "room": "书房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-12.jpg",
+    "name": "书房书桌与书架",
+    "room": "书房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-13.jpg",
+    "name": "书房全景",
+    "room": "书房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-14.jpg",
+    "name": "楼梯挑空与天窗",
+    "room": "楼梯与挑空",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-15.jpg",
+    "name": "休闲角画架与绿植",
+    "room": "陈设与细节",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-16.jpg",
+    "name": "厨房开放搁板与厨具",
+    "room": "厨房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-17.jpg",
+    "name": "厨房中岛与操作区",
+    "room": "厨房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-18.jpg",
+    "name": "餐厨空间全景",
+    "room": "厨房",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-19.jpg",
+    "name": "餐厅长桌与背景墙",
+    "room": "餐厅",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-20.jpg",
+    "name": "客厅与餐厅通景",
+    "room": "餐厅",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-21.jpg",
+    "name": "客厅书柜与壁炉",
+    "room": "客厅",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/rainforest-whale/reference-22.jpg",
+    "name": "客厅沙发与书柜全景",
+    "room": "客厅",
+    "collectionId": "rainforest-whale",
+    "project": "雨林的鲸",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-01.jpg",
+    "name": "入户走廊与装饰画",
+    "room": "玄关与过道",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-02.jpg",
+    "name": "厨房吧台与窗边",
+    "room": "厨房",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-03.jpg",
+    "name": "餐厅餐桌与蓝色墙纸",
+    "room": "餐厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-04.jpg",
+    "name": "餐厅全景",
+    "room": "餐厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-05.jpg",
+    "name": "客厅沙发与茶几",
+    "room": "客厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-06.jpg",
+    "name": "客厅边几与书架",
+    "room": "客厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-07.jpg",
+    "name": "玄关端景柜",
+    "room": "玄关与过道",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-08.jpg",
+    "name": "客厅临窗全景",
+    "room": "客厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-09.jpg",
+    "name": "客厅沙发正景",
+    "room": "客厅",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-10.jpg",
+    "name": "浅色卧室床头",
+    "room": "卧室",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-11.jpg",
+    "name": "浅色卧室床铺与窗边",
+    "room": "卧室",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-12.jpg",
+    "name": "卫生间洗手台与淋浴区",
+    "room": "卫生间",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-13.jpg",
+    "name": "书房书桌与书柜",
+    "room": "书房",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-14.jpg",
+    "name": "卧室床铺与窗景",
+    "room": "卧室",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-15.jpg",
+    "name": "卫生间浴缸与窗景",
+    "room": "卫生间",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-16.jpg",
+    "name": "卧室床头正景",
+    "room": "卧室",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/illusion-city/reference-17.jpg",
+    "name": "卧室床铺侧景",
+    "room": "卧室",
+    "collectionId": "illusion-city",
+    "project": "幻城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-01.jpg",
+    "name": "楼梯挑空与吊灯",
+    "room": "楼梯与挑空",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-02.jpg",
+    "name": "卧室电视柜与休闲区",
+    "room": "卧室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-03.jpg",
+    "name": "卧室床铺与沙发",
+    "room": "卧室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-04.jpg",
+    "name": "临窗休闲椅与边几",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-05.jpg",
+    "name": "卧室沙发与窗边",
+    "room": "卧室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-06.jpg",
+    "name": "卧室床头柜与格栅",
+    "room": "卧室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-07.jpg",
+    "name": "餐厅餐桌与吊灯",
+    "room": "餐厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-08.jpg",
+    "name": "餐厅座椅与窗景",
+    "room": "餐厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-09.jpg",
+    "name": "餐厅墙饰与椅背",
+    "room": "餐厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-10.jpg",
+    "name": "餐厅餐桌侧景",
+    "room": "餐厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-11.jpg",
+    "name": "花鸟墙纸细节",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-12.jpg",
+    "name": "休闲椅靠背细节",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-13.jpg",
+    "name": "茶盘与雕塑摆件",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-14.jpg",
+    "name": "茶盘器物俯视细节",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-15.jpg",
+    "name": "果盘细节",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-16.jpg",
+    "name": "玄关边柜与雕塑",
+    "room": "玄关与过道",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-17.jpg",
+    "name": "玄关边柜正景",
+    "room": "玄关与过道",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-18.jpg",
+    "name": "圆形门洞内的茶桌",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-19.jpg",
+    "name": "楼梯口与圆形壁饰",
+    "room": "楼梯与挑空",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-20.jpg",
+    "name": "格栅隔断与门环",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-21.jpg",
+    "name": "客厅沙发与茶几",
+    "room": "客厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-22.jpg",
+    "name": "格栅隔断与石材墙",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-23.jpg",
+    "name": "客厅隔断与沙发",
+    "room": "客厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-24.jpg",
+    "name": "茶室绿墙与圆镜",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-25.jpg",
+    "name": "茶室陈列柜细节",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-26.jpg",
+    "name": "茶室座椅与茶席",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-27.jpg",
+    "name": "茶室门洞与格栅",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-28.jpg",
+    "name": "楼梯与圆形壁饰",
+    "room": "楼梯与挑空",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-29.jpg",
+    "name": "楼梯与格栅隔断",
+    "room": "楼梯与挑空",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-30.jpg",
+    "name": "客厅沙发侧景",
+    "room": "客厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-31.jpg",
+    "name": "沙发扶手与植物",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-32.jpg",
+    "name": "沙发正景与花鸟墙面",
+    "room": "陈设与细节",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-33.jpg",
+    "name": "楼梯转折与石材墙",
+    "room": "楼梯与挑空",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-34.jpg",
+    "name": "茶室茶桌全景",
+    "room": "茶室",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-35.jpg",
+    "name": "客厅与餐厅通景",
+    "room": "餐厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/fengming-bay/reference-36.jpg",
+    "name": "客厅全景与吊灯",
+    "room": "客厅",
+    "collectionId": "fengming-bay",
+    "project": "中式凤鸣湾",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-01.jpg",
+    "name": "客厅单椅与屏风",
+    "room": "客厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-02.jpg",
+    "name": "茶几茶具与花艺",
+    "room": "陈设与细节",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-03.jpg",
+    "name": "客厅茶几与沙发",
+    "room": "客厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-04.jpg",
+    "name": "沙发扶手与山水屏风",
+    "room": "陈设与细节",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-05.jpg",
+    "name": "餐厅餐桌与书架",
+    "room": "餐厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-06.jpg",
+    "name": "客厅沙发与楼梯",
+    "room": "客厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-07.jpg",
+    "name": "挑空客厅正景",
+    "room": "客厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-08.jpg",
+    "name": "挑空客厅临窗全景",
+    "room": "客厅",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-09.jpg",
+    "name": "茶室长桌与壁画",
+    "room": "茶室",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-10.jpg",
+    "name": "茶室端景台与圆形挂画",
+    "room": "茶室",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-11.jpg",
+    "name": "茶室茶桌与茶具",
+    "room": "茶室",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-12.jpg",
+    "name": "休闲区扶手椅与边柜",
+    "room": "陈设与细节",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-13.jpg",
+    "name": "卧室床铺与洗手台",
+    "room": "卧室",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/jinhui-city/reference-14.jpg",
+    "name": "卧室床头与衣柜",
+    "room": "卧室",
+    "collectionId": "jinhui-city",
+    "project": "新中式金辉城",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-01.jpg",
+    "name": "门厅与过道",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-02.jpg",
+    "name": "玄关端景",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-03.jpg",
+    "name": "过道与圆形地面拼花",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-04.jpg",
+    "name": "玄关走廊",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-05.jpg",
+    "name": "玄关摆件与端景柜",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-06.jpg",
+    "name": "过道圈椅端景",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-07.jpg",
+    "name": "书房书桌细节",
+    "room": "书房",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-08.jpg",
+    "name": "书房书桌与书柜",
+    "room": "书房",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-09.jpg",
+    "name": "卧室床头背景墙",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-10.jpg",
+    "name": "卧室床铺与窗边",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-11.jpg",
+    "name": "走廊尽端端景",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-12.jpg",
+    "name": "粉色卧室梳妆台",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-13.jpg",
+    "name": "粉色卧室床铺",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-14.jpg",
+    "name": "起居空间圆形茶几",
+    "room": "会客与起居空间",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-15.jpg",
+    "name": "卧室梳妆台与圆镜",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-16.jpg",
+    "name": "卧室书桌与休闲椅",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-17.jpg",
+    "name": "卧室床铺与长窗",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-18.jpg",
+    "name": "卧室床尾与圆形门洞",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-19.jpg",
+    "name": "起居空间沙发茶几",
+    "room": "会客与起居空间",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-20.jpg",
+    "name": "卧室床头与床铺",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-21.jpg",
+    "name": "圆形门洞与书架",
+    "room": "陈设与细节",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-22.jpg",
+    "name": "起居空间全景",
+    "room": "会客与起居空间",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-23.jpg",
+    "name": "健身房器械区",
+    "room": "健身房",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-24.jpg",
+    "name": "木格栅走廊",
+    "room": "玄关与过道",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-25.jpg",
+    "name": "石材摆件细节",
+    "room": "陈设与细节",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-26.jpg",
+    "name": "下沉会客厅全景",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-27.jpg",
+    "name": "下沉会客厅茶几与电视墙",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-28.jpg",
+    "name": "下沉会客厅入口台阶",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-29.jpg",
+    "name": "茶室茶桌与座椅",
+    "room": "茶室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-30.jpg",
+    "name": "茶室茶席与花艺",
+    "room": "茶室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-31.jpg",
+    "name": "茶席器物细节",
+    "room": "茶室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-32.jpg",
+    "name": "卧室床铺与山水墙面",
+    "room": "卧室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-33.jpg",
+    "name": "梳妆台与首饰摆件",
+    "room": "陈设与细节",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-34.jpg",
+    "name": "客厅与茶室通景",
+    "room": "茶室",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-35.jpg",
+    "name": "餐厅餐桌与吊灯",
+    "room": "餐厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-36.jpg",
+    "name": "客厅沙发与茶几",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-37.jpg",
+    "name": "客厅落地窗与庭院",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
+  },
+  {
+    "url": "/assets/collections/heritage-courtyard/reference-38.jpg",
+    "name": "客厅临窗全景",
+    "room": "客厅",
+    "collectionId": "heritage-courtyard",
+    "project": "中式传家合院",
+    "label": "项目参考"
   }
 ]

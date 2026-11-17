@@ -12,3 +12,6 @@ export function resizeRect(rect,handle,point){
  if(handle.includes('s'))bottom=clamp(point.y,top+min,1);
  return {x:left,y:top,w:right-left,h:bottom-top};
 }
+export function moveRect(rect,dx,dy){
+ return {...rect,x:Math.max(0,Math.min(1-rect.w,rect.x+dx)),y:Math.max(0,Math.min(1-rect.h,rect.y+dy))};
+}

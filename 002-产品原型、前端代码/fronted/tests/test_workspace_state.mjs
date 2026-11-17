@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { initialWorkspace } from '../src/workspace-state.mjs';
+const first=initialWorkspace();
+assert.equal(first.source,null);
+assert.equal(first.projectId,null);
+assert.equal(first.reference,'');
+assert.equal(first.isSample,false);
+assert.equal(first.step,0);
+assert.deepEqual(first.rooms,[]);
+assert.deepEqual(first.versions,[]);
+first.rooms.push({name:'不能泄漏到新登录'});
+assert.deepEqual(initialWorkspace().rooms,[]);
+console.log('通过：新登录为空白工作台，不带入图纸、样例、项目或上次版本。');

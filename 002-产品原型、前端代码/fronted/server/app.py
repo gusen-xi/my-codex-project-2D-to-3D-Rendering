@@ -6,8 +6,11 @@ import base64
 import importlib.util
 import io
 import json
+import hashlib
 import os
 import re
+import secrets
+import sys
 from pathlib import Path
 import subprocess
 import threading
@@ -17,12 +20,20 @@ from concurrent.futures import ThreadPoolExecutor
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlparse
 
+import pymysql
+if __package__:
+    from .database import Database
+else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from database import Database
+
 from PIL import Image, ImageDraw, ImageOps, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'public'
 OUTPUT = ROOT / 'outputs'
 WORK = ROOT / 'work'
+DB = Database()
 SERVICE = Path(os.environ.get('IMAGE_STYLE_SERVICE', str(Path.home() / '.codex/mcp-services/imageStyle-1.1.6')))
 PYTHON = SERVICE / '.venv/bin/python'
 MAX_BYTES = 25 * 1024 * 1024
@@ -41,19 +52,40 @@ def atomic_json(path, value):
 
 
 def load_jobs():
-    for path in (OUTPUT / 'jobs').glob('*.json'):
-        try:
-            job = json.loads(path.read_text())
-            if job['status'] in ('queued', 'running'):
-                job.update(status='unknown', error='服务曾中断，任务结果未知。请核对上游记录后再决定是否重新提交。')
-                atomic_json(path, job)
-            JOBS[job['id']] = job
-        except (ValueError, KeyError):
-            continue
+    JOBS.clear()
+    for job in DB.jobs():
+        if job['status'] in ('queued', 'running'):
+            journal = OUTPUT / 'jobs' / (job['id'] + '.json')
+            if journal.exists():
+                recovery = json.loads(journal.read_text())
+                if recovery.get('status') == 'completed' and recovery.get('image') and recovery.get('userId') == job['userId']:
+                    job.update({k: recovery[k] for k in ('status','stage','image','finished') if k in recovery})
+                    DB.save_job(job)
+                    JOBS[job['id']] = job
+                    continue
+            job.update(status='unknown', error='服务曾中断，任务结果未知。请核对上游记录后再决定是否重新提交。')
+            DB.save_job(job)
+        JOBS[job['id']] = job
+
+
+def password_hash(password, salt=None):
+    salt = salt or secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 120000).hex()
+    return salt, digest
+
+
+def valid_credentials(username, password):
+    return (isinstance(username, str) and 3 <= len(username.strip()) <= 32
+            and re.fullmatch(r'[\w\-一-龥]+', username.strip())
+            and isinstance(password, str) and 6 <= len(password) <= 64)
 
 
 def save_job(job):
+    # Recovery journal preserves model output even if MySQL becomes unavailable.
     atomic_json(OUTPUT / 'jobs' / (job['id'] + '.json'), job)
+    # Standalone ComfyUI jobs have no website account; retain their existing local journal.
+    if job.get('userId'):
+        DB.save_job(job)
 
 
 def local_image(url):
@@ -118,6 +150,29 @@ def text(data, key, limit=3000):
     return value.strip()
 
 
+def generation_specs(data):
+    size = data.get('outputSize', '1536x1024')
+    quality = data.get('outputQuality', 'medium')
+    if size not in ('1024x1024', '1536x1024', '1024x1536') or quality not in ('low', 'medium', 'high'):
+        raise ValueError('出图规格无效，请选择提供的尺寸和质量。')
+    dimensions = []
+    for key, label in (('roomLength', '长'), ('roomWidth', '宽')):
+        value = data.get(key)
+        if value in (None, ''):
+            dimensions.append(f'{label}未知，未提供实测尺寸')
+            continue
+        if isinstance(value, bool):
+            raise ValueError('房间长宽须为 0.1 至 100 米的数值。')
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            raise ValueError('房间长宽须为 0.1 至 100 米的数值。')
+        if not .1 <= number <= 100:
+            raise ValueError('房间长宽须为 0.1 至 100 米的数值。')
+        dimensions.append(f'{label}{number:g}米')
+    return size, quality, '；'.join(dimensions)
+
+
 def generate(job, data):
     try:
         job.update(status='running', stage='准备图片与约束')
@@ -128,7 +183,8 @@ def generate(job, data):
         refs = []
         mask_path = None
         locks = '保留墙体、门窗洞口、空间划分、固定家具位置、主要家具布局与尺寸比例。不得移墙、增删门窗、移动固定家具。'
-        notes = text(data, 'structure')
+        size, quality, dimensions = generation_specs(data)
+        notes = text(data, 'structure') + '；房间净尺寸：' + dimensions
         style = text(data, 'style', 200)
         instruction = text(data, 'instruction')
         if action == 'generate':
@@ -147,12 +203,15 @@ def generate(job, data):
             prompt = ('将户型平面图中绿色框选的目标房间转换为一张写实室内透视效果图。第一张是整套户型与目标范围，第二张为目标局部平面图，均为几何依据，不要输出平面图。'
                       f'房间：{text(data,"room",100)}。风格：{style}。{locks} 已核对信息：{notes}。'
                       f'层高：{text(data,"height",100) or "未知，不作为实测尺寸"}。视角：{text(data,"camera",300)}。'
-                      f'观察位置位于框选区域内，朝向角度以平面图向右为0度、向下为90度。其他设计意向：{instruction}。自然材质，真实光影，室内摄影，单张横幅，不含文字。')
+                      f'观察位置位于框选区域内，朝向角度以平面图向右为0度、向下为90度。其他设计意向：{instruction}。自然材质，真实光影，室内摄影，单张透视图，不含文字。')
             if data.get('reference'):
                 refs.append(local_image(data['reference']))
                 prompt += '最后一张仅作为风格参考，不得用其布局覆盖平面图。'
             mode = 'reference-generate'
         else:
+            with Image.open(source) as original:
+                ratio = original.width / original.height
+                size = '1536x1024' if ratio > 1.2 else '1024x1536' if ratio < .8 else '1024x1024'
             refs = [source]
             mode = 'base-edit'
             prompt = f'编辑第一张室内透视图。保持相机位置、朝向、透视与构图不变。{locks} 已核对结构：{notes}。'
@@ -169,7 +228,7 @@ def generate(job, data):
         job.update(stage='模型正在生成，请耐心等待')
         save_job(job)
         command = [str(PYTHON), str(SERVICE / 'route_a_image.py'), '--timeout', '600', mode,
-                   '--prompt', prompt, '--output', str(output), '--size', '1536x1024', '--quality', 'medium']
+                   '--prompt', prompt, '--output', str(output), '--size', size, '--quality', quality]
         for ref in refs:
             command.extend(['--image', str(ref)])
         if mask_path:
@@ -187,7 +246,13 @@ def generate(job, data):
                     box = pixel_box(r, original.size)
                     original = composite_selection(original, generated, box)
                     original.save(output)
-            job.update(status='completed', stage='已完成，请核对结构', image='/outputs/generated/' + output.name)
+            if action == 'restyle':
+                with Image.open(source) as original, Image.open(output) as generated:
+                    resized = generated.convert('RGB').resize(original.size, Image.Resampling.LANCZOS)
+                    resized.save(output)
+            with Image.open(output) as final:
+                actual_size = f'{final.width}x{final.height}'
+            job.update(status='completed', stage='已完成，请核对结构', image='/outputs/generated/' + output.name, outputSize=actual_size, outputQuality=quality)
         elif result.returncode == 3:
             job.update(status='unknown', error='上游可能已完成，但图片未成功保存。请核对上游记录，勿直接重复提交。')
         else:
@@ -260,9 +325,24 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store')
         super().end_headers()
 
-    def json_response(self, data, status=200):
+    def session(self):
+        match = re.fullmatch(r'Bearer ([A-Za-z0-9_-]{43})', self.headers.get('Authorization', ''))
+        token = match.group(1) if match else None
+        user = DB.session_user(token)
+        return {'user': user} if user else None
+
+    def authenticated(self):
+        session = self.session()
+        if not session:
+            self.json_response({'error': '请先登录。'}, 401)
+            return None
+        return session['user']
+
+    def json_response(self, data, status=200, cookie=None):
         raw = json.dumps(data, ensure_ascii=False).encode()
         self.send_response(status)
+        if cookie:
+            self.send_header('Set-Cookie', cookie)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(raw)))
         self.end_headers()
@@ -280,22 +360,60 @@ class Handler(SimpleHTTPRequestHandler):
         return super().translate_path(path)
 
     def do_GET(self):
+        try:
+            return self.get_response()
+        except pymysql.MySQLError:
+            return self.json_response({'error': '数据库暂不可用，请确认 Docker/MySQL 已启动。'}, 503)
+        except (ValueError, OSError):
+            return self.json_response({'error': '文件不可访问。'}, 404)
+
+    def get_response(self):
         path = urlparse(self.path).path
+        if path == '/api/auth/session':
+            session = self.session()
+            return self.json_response({'authenticated': bool(session), 'user': session['user'] if session else None})
         if path == '/api/config':
             try:
                 ready = bool(helper_module().load_config(None).get('IMAGE_2_API_KEY')) and PYTHON.exists()
             except Exception:
                 ready = False
-            return self.json_response({'application': 'wuyin-space', 'imageReady': ready, 'visionModel': os.environ.get('VISION_MODEL', 'gpt-5.6-luna')})
+            return self.json_response({'application': 'wuyin-space', 'imageReady': ready, 'visionModel': os.environ.get('VISION_MODEL', 'gpt-5.6-luna'), 'storage': 'mysql'})
+        user = None
+        if path.startswith('/api/') or path.startswith('/outputs/'):
+            user = self.authenticated()
+            if not user:
+                return
+        if path == '/api/profile':
+            avatar = OUTPUT / 'avatars' / f"{user['id']}.png"
+            return self.json_response({'avatar': f'/api/profile/avatar?v={avatar.stat().st_mtime_ns}' if avatar.exists() else None})
+        if path == '/api/profile/avatar':
+            avatar = OUTPUT / 'avatars' / f"{user['id']}.png"
+            if not avatar.exists():
+                return self.json_response({'error': '尚未上传头像'}, 404)
+            raw = avatar.read_bytes()
+            self.send_response(200)
+            self.send_header('Content-Type', 'image/png')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Content-Length', str(len(raw)))
+            self.end_headers()
+            return self.wfile.write(raw)
+        if path == '/api/projects':
+            return self.json_response(DB.project_list(user['id']))
         if path == '/api/workspace':
-            file = OUTPUT / 'workspace.json'
-            return self.json_response(json.loads(file.read_text()) if file.exists() else None)
+            from urllib.parse import parse_qs
+            project_id=parse_qs(urlparse(self.path).query).get('projectId',[None])[0]
+            return self.json_response(DB.workspace(user['id'],project_id) if project_id else None)
         if path.startswith('/api/jobs/'):
-            job = JOBS.get(path.rsplit('/', 1)[-1])
-            return self.json_response(dict(job) if job else {'error': '任务不存在'}, 200 if job else 404)
+            job = DB.job(user['id'], path.rsplit('/', 1)[-1])
+            if not job:
+                return self.json_response({'error': '任务不存在'}, 404)
+            return self.json_response(dict(job))
         if path.startswith('/outputs/'):
-            file = (OUTPUT / unquote(path[len('/outputs/'):])).resolve()
-            if not file.is_relative_to(OUTPUT.resolve()) or file.suffix.lower() not in ('.png', '.jpg', '.jpeg') or not file.is_file():
+            url = unquote(path)
+            if not DB.allowed(user['id'], url):
+                return self.json_response({'error': '文件不可访问'}, 404)
+            file = DB.file(url)
+            if file.suffix.lower() not in ('.png', '.jpg', '.jpeg'):
                 return self.json_response({'error': '文件不可访问'}, 404)
             raw = file.read_bytes()
             self.send_response(200)
@@ -322,11 +440,44 @@ class Handler(SimpleHTTPRequestHandler):
             if not isinstance(data, dict):
                 raise ValueError('请求格式无效。')
             path = urlparse(self.path).path
+            if path.startswith('/api/auth/'):
+                return self.json_response({'error': '请通过JavaScript后端登录或注册。'}, 404)
+            user = self.authenticated()
+            if not user:
+                return
+            self.user = user
+            if path == '/api/profile/avatar':
+                encoded = text(data, 'data', 7 * 1024 * 1024)
+                try:
+                    raw = base64.b64decode(encoded, validate=True)
+                    if len(raw) > 5 * 1024 * 1024:
+                        raise ValueError('头像最大支持 5 MB。')
+                    with Image.open(io.BytesIO(raw)) as original:
+                        if original.format not in ('JPEG', 'PNG', 'WEBP') or original.width * original.height > 25_000_000:
+                            raise ValueError('请选择 2500 万像素以内的 JPG、PNG 或 WebP 图片。')
+                        avatar = ImageOps.fit(ImageOps.exif_transpose(original).convert('RGB'), (256, 256))
+                    folder = OUTPUT / 'avatars'
+                    folder.mkdir(exist_ok=True)
+                    target = folder / f"{user['id']}.png"
+                    temp = folder / (uuid.uuid4().hex + '.tmp')
+                    avatar.save(temp, format='PNG')
+                    temp.replace(target)
+                except (OSError, Image.DecompressionBombError):
+                    raise ValueError('头像无法读取，请选择有效图片。')
+                return self.json_response({'avatar': f'/api/profile/avatar?v={target.stat().st_mtime_ns}'})
+            if path == '/api/projects':
+                return self.json_response(DB.create_project(user['id'],data.get('name')),201)
+            if path in ('/api/workspace','/api/upload','/api/generate','/api/analyze'):
+                project_id=data.get('projectId')
+                if isinstance(project_id,bool) or not isinstance(project_id,int) or project_id <= 0:
+                    raise ValueError('请先创建或选择项目。')
+                with DB.transaction() as c:
+                    DB.project(c,user['id'],project_id)
             if path == '/api/workspace':
                 if length > 2000000:
                     raise ValueError('工作区数据过大。')
-                atomic_json(OUTPUT / 'workspace.json', data)
-                return self.json_response({'saved': True})
+                state = DB.save_workspace(user['id'], data)
+                return self.json_response({'saved': True, 'rooms': state.get('rooms', [])})
             if path == '/api/upload':
                 return self.upload(data)
             if path not in ('/api/generate', '/api/analyze'):
@@ -335,15 +486,16 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError('请确认允许将本次图片发送至模型服务。')
             local_image(data.get('source'))
             key = text(data, 'requestId', 100)
-            if not key:
-                raise ValueError('缺少请求编号。')
+            if not key or not key.isascii():
+                raise ValueError('缺少请求编号或格式无效。')
             with LOCK:
                 for job in JOBS.values():
-                    if job.get('requestId') == key:
+                    if job.get('requestId') == key and job.get('userId') == user['id'] and job.get('projectId') == project_id:
                         return self.json_response(dict(job))
                 if sum(j['status'] in ('running', 'queued') for j in JOBS.values()) >= 2:
                     raise ValueError('已有两个任务处理中，请等待完成。')
                 if path == '/api/generate':
+                    generation_specs(data)
                     action = data.get('action', 'generate')
                     if action not in ('generate', 'edit', 'restyle'):
                         raise ValueError('不支持的任务类型。')
@@ -358,10 +510,14 @@ class Handler(SimpleHTTPRequestHandler):
                     if not PYTHON.exists() or not helper_module().load_config(None).get('IMAGE_2_API_KEY'):
                         raise ValueError('生图服务尚未配置，请参考 README。')
                 job = {'id': uuid.uuid4().hex, 'requestId': key, 'kind': 'analyze' if path.endswith('analyze') else 'image', 'status': 'queued', 'created': time.time(), 'stage': '已提交，等待处理', 'request': data}
+                job, created = DB.new_job(user['id'], job)
                 JOBS[job['id']] = job
-                save_job(job)
+                if not created:
+                    return self.json_response(dict(job))
                 POOL.submit(analyze if path.endswith('analyze') else generate, job, data)
                 return self.json_response(dict(job), 202)
+        except pymysql.MySQLError:
+            return self.json_response({'error': '数据库暂不可用，数据未确认保存。请检查 MySQL 后重试。'}, 503)
         except (ValueError, KeyError, OSError, TypeError) as error:
             return self.json_response({'error': str(error) if isinstance(error, ValueError) else '无法处理文件或请求，请检查输入。'}, 400)
         except Exception:
@@ -378,6 +534,8 @@ class Handler(SimpleHTTPRequestHandler):
             doc = pdfium.PdfDocument(raw)
             if len(doc) > 30:
                 raise ValueError('PDF 最多支持 30 页，请先拆分文件。')
+            original = OUTPUT / 'uploads' / (ident + '.pdf')
+            original.write_bytes(raw)
             pages = []
             try:
                 for i in range(len(doc)):
@@ -392,6 +550,7 @@ class Handler(SimpleHTTPRequestHandler):
                     page.close()
             finally:
                 doc.close()
+            DB.add_assets(self.user['id'], pages, data.get('name', '平面图.pdf'), parent='/outputs/uploads/' + original.name, project_id=data['projectId'])
             return self.json_response({'pages': pages})
         try:
             with Image.open(io.BytesIO(raw)) as im:
@@ -401,7 +560,9 @@ class Handler(SimpleHTTPRequestHandler):
                 image.thumbnail((3000, 3000))
                 dest = OUTPUT / 'uploads' / (ident + '.jpg')
                 image.save(dest, quality=94)
-            return self.json_response({'pages': ['/outputs/uploads/' + dest.name]})
+            urls = ['/outputs/uploads/' + dest.name]
+            DB.add_assets(self.user['id'], urls, data.get('name', dest.name), 'reference' if data.get('reference') else 'plan_page',project_id=data['projectId'])
+            return self.json_response({'pages': urls})
         except (OSError, Image.DecompressionBombError):
             raise ValueError('图片损坏或格式不支持，请使用 JPG、PNG 或 PDF。')
 

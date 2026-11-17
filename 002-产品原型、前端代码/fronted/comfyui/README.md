@@ -9,7 +9,7 @@
 ## 安装
 
 1. 安装官方 ComfyUI： https://github.com/Comfy-Org/ComfyUI ，使用其 requirements.txt。
-2. 将 `custom_nodes/wuyin` 复制到 ComfyUI 的 `custom_nodes/wuyin`。
+2. 将 `custom_nodes/wuyin` 复制到 ComfyUI 的 `custom_nodes/wuyin`，并在其 Python 环境安装原型 `requirements.txt`（包含网站后端共享代码需要的 PyMySQL）。
 3. 设置环境变量 `WUYIN_PROJECT_ROOT` 为本原型根目录（包含 server/app.py、public/、outputs/）；本包使用本原型的真实生成与像素合成实现，并非独立脱离原型运行的节点库。
 4. 确保本机 imageStyle 服务已配置。默认位置 `~/.codex/mcp-services/imageStyle-1.1.6`，可通过 `IMAGE_STYLE_SERVICE` 修改；密钥使用服务原有配置，不写入工作流。
 5. 将 `wuyin-plan.jpg` 放入 ComfyUI 的 `input/`，重启 ComfyUI，导入 `wuyin-interior.json`。可换成自己的平面图。

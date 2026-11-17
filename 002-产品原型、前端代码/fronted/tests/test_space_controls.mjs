@@ -17,3 +17,7 @@ for(const handle of ['n','ne','e','se','s','sw','w','nw']){
  }
 }
 console.log('通过：八向角度、旧角度归一化、八个缩放手柄、边界约束和最小尺寸。');
+
+const {moveRect}=await import('../src/space-controls.mjs');
+assert.deepEqual(moveRect({x:.2,y:.2,w:.3,h:.4},2,-2),{x:.7,y:0,w:.3,h:.4});
+assert.deepEqual(moveRect({x:.2,y:.2,w:.3,h:.4},.1,.1),{x:.30000000000000004,y:.30000000000000004,w:.3,h:.4});

@@ -1,0 +1,170 @@
+-- 无垠空间 v0.1 | MySQL 8.4+ | UTF-8
+-- 在客户端先选择目标数据库（当前本机为 wuyin）后执行。
+-- 不创建账号、不写入密码、不删除数据；IF NOT EXISTS 不负责升级旧表。
+SET NAMES utf8mb4;
+SET time_zone = '+00:00';
+
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+    username VARCHAR(32) COLLATE utf8mb4_0900_as_cs NOT NULL COMMENT '登录名，区分大小写，与当前原型一致',
+    password_hash VARCHAR(255) NOT NULL COMMENT '密码派生结果，禁止明文',
+    password_salt VARCHAR(64) NOT NULL COMMENT '每个用户独立随机盐',
+    password_algorithm VARCHAR(32) NOT NULL DEFAULT 'pbkdf2_sha256' COMMENT '当前原型使用PBKDF2-SHA256',
+    password_iterations INT UNSIGNED NOT NULL DEFAULT 120000 COMMENT '保存实际迭代次数，供后续升级',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_users_username (username),
+    CONSTRAINT ck_users_username CHECK (CHAR_LENGTH(username) BETWEEN 3 AND 32),
+    CONSTRAINT ck_users_iterations CHECK (password_iterations > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本地试用账号';
+
+CREATE TABLE IF NOT EXISTS projects (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL COMMENT '项目所属设计师',
+    name VARCHAR(128) NOT NULL COMMENT '例如无垠·住宅设计',
+    area_sqm DECIMAL(10,2) NULL COMMENT '面积平方米；未知为NULL',
+    is_sample BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否真实项目演示样例',
+    workspace_draft JSON NULL COMMENT 'UI草稿：step/tab/zoom/roomIndex等，不作为历史事实来源',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_projects_user_updated (user_id, updated_at),
+    CONSTRAINT fk_projects_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT ck_projects_area CHECK (area_sqm IS NULL OR area_sqm > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设计项目及工作台恢复草稿';
+
+CREATE TABLE IF NOT EXISTS assets (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id BIGINT UNSIGNED NOT NULL,
+    kind ENUM('plan_original','plan_page','reference','generated','mask') NOT NULL COMMENT '原图/PDF、PDF页面、人工或风格参考、生成图、蒙版',
+    parent_asset_id BIGINT UNSIGNED NULL COMMENT 'PDF页面指向原PDF，派生文件指向来源',
+    original_name VARCHAR(255) NOT NULL,
+    storage_path VARCHAR(1024) NOT NULL COMMENT '受控相对路径或对象存储key，不保存密钥及临时签名URL',
+    mime_type VARCHAR(64) NOT NULL,
+    byte_size BIGINT UNSIGNED NULL,
+    width_px INT UNSIGNED NULL,
+    height_px INT UNSIGNED NULL,
+    page_number SMALLINT UNSIGNED NULL COMMENT 'PDF页码从1起',
+    reference_room VARCHAR(64) NULL COMMENT '人工参考图库的房间分类',
+    is_human_reference BOOLEAN NOT NULL DEFAULT FALSE COMMENT '区分人工图与AI成果',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_assets_project_kind (project_id, kind),
+    KEY idx_assets_parent (parent_asset_id),
+    CONSTRAINT fk_assets_project FOREIGN KEY (project_id) REFERENCES projects(id),
+    CONSTRAINT fk_assets_parent FOREIGN KEY (parent_asset_id) REFERENCES assets(id),
+    CONSTRAINT ck_assets_dimensions CHECK ((width_px IS NULL OR width_px > 0) AND (height_px IS NULL OR height_px > 0)),
+    CONSTRAINT ck_assets_page CHECK (page_number IS NULL OR page_number > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件元数据，图片/PDF本体仍放文件存储';
+
+CREATE TABLE IF NOT EXISTS rooms (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id BIGINT UNSIGNED NOT NULL,
+    plan_asset_id BIGINT UNSIGNED NOT NULL COMMENT '被框选的平面图或PDF页面',
+    name VARCHAR(64) NOT NULL,
+    recognition_source ENUM('sample','manual','ai') NOT NULL DEFAULT 'manual',
+    rect_x DECIMAL(7,6) NOT NULL,
+    rect_y DECIMAL(7,6) NOT NULL,
+    rect_w DECIMAL(7,6) NOT NULL,
+    rect_h DECIMAL(7,6) NOT NULL COMMENT '均为占整张平面图的归一化比例',
+    structure_notes TEXT NOT NULL COMMENT '墙体、门窗、固定家具和布局的识别/纠正描述',
+    dimensions_notes TEXT NULL COMMENT '可读尺寸及不确定性，禁止用0表示未知尺寸',
+    ceiling_height_m DECIMAL(5,2) NULL COMMENT '用户明确填写的层高，未知为NULL',
+    camera_x DECIMAL(7,6) NOT NULL DEFAULT 0.500000,
+    camera_y DECIMAL(7,6) NOT NULL DEFAULT 0.800000 COMMENT '观察点相对房间框位置',
+    camera_angle SMALLINT UNSIGNED NOT NULL DEFAULT 270 COMMENT '右为东0度、下为南90度，八向45度递增',
+    confirmed_by BIGINT UNSIGNED NULL,
+    confirmed_at DATETIME(3) NULL COMMENT '几何/描述/尺寸/视角修改后必须清空确认',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_rooms_project_plan (project_id, plan_asset_id),
+    CONSTRAINT fk_rooms_project FOREIGN KEY (project_id) REFERENCES projects(id),
+    CONSTRAINT fk_rooms_plan FOREIGN KEY (plan_asset_id) REFERENCES assets(id),
+    CONSTRAINT fk_rooms_confirmer FOREIGN KEY (confirmed_by) REFERENCES users(id),
+    CONSTRAINT ck_rooms_rect CHECK (rect_x >= 0 AND rect_y >= 0 AND rect_w >= 0.01 AND rect_h >= 0.01 AND rect_x + rect_w <= 1 AND rect_y + rect_h <= 1),
+    CONSTRAINT ck_rooms_camera CHECK (camera_x BETWEEN 0 AND 1 AND camera_y BETWEEN 0 AND 1 AND camera_angle IN (0,45,90,135,180,225,270,315)),
+    CONSTRAINT ck_rooms_height CHECK (ceiling_height_m IS NULL OR ceiling_height_m > 0),
+    CONSTRAINT ck_rooms_confirmation CHECK ((confirmed_by IS NULL AND confirmed_at IS NULL) OR (confirmed_by IS NOT NULL AND confirmed_at IS NOT NULL))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='房间当前可编辑的核对结果';
+
+CREATE TABLE IF NOT EXISTS model_tasks (
+    id CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '兼容当前job.id UUID hex',
+    project_id BIGINT UNSIGNED NOT NULL,
+    requested_by BIGINT UNSIGNED NOT NULL,
+    request_id VARCHAR(100) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '幂等编号，同一项目重复提交返回原任务',
+    room_id BIGINT UNSIGNED NULL COMMENT '识别整套平面图时可为空',
+    source_asset_id BIGINT UNSIGNED NOT NULL COMMENT '识别/生图用平面图；编辑用既有结果或人工参考图',
+    reference_asset_id BIGINT UNSIGNED NULL,
+    action ENUM('analyze','generate','edit','restyle') NOT NULL,
+    status ENUM('queued','running','completed','failed','unknown') NOT NULL DEFAULT 'queued',
+    stage VARCHAR(255) NULL,
+    request_snapshot JSON NOT NULL COMMENT '不可变请求：结构/尺寸/房间框/视角/风格/层高/指令/selection/confirmed/consent',
+    result_snapshot JSON NULL COMMENT '识别rooms、usage、提供商响应的非敏感字段',
+    consented_at DATETIME(3) NOT NULL COMMENT '用户同意此次外发资料的时间',
+    provider VARCHAR(128) NULL,
+    model_name VARCHAR(128) NULL,
+    provider_request_id VARCHAR(128) NULL COMMENT '用于结果未知时核对上游记录',
+    error_message TEXT NULL,
+    diagnostic JSON NULL COMMENT 'exitCode/httpStatus等，不存密钥和完整私密日志',
+    actual_cost DECIMAL(12,6) NULL COMMENT '实际费用，未知为NULL，不当作免费',
+    cost_currency CHAR(3) CHARACTER SET ascii NULL COMMENT '有费用时填写币种',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    started_at DATETIME(3) NULL,
+    finished_at DATETIME(3) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_tasks_project_request (project_id, request_id),
+    KEY idx_tasks_project_created (project_id, created_at),
+    KEY idx_tasks_status_created (status, created_at),
+    CONSTRAINT fk_tasks_project FOREIGN KEY (project_id) REFERENCES projects(id),
+    CONSTRAINT fk_tasks_user FOREIGN KEY (requested_by) REFERENCES users(id),
+    CONSTRAINT fk_tasks_room FOREIGN KEY (room_id) REFERENCES rooms(id),
+    CONSTRAINT fk_tasks_source FOREIGN KEY (source_asset_id) REFERENCES assets(id),
+    CONSTRAINT fk_tasks_reference FOREIGN KEY (reference_asset_id) REFERENCES assets(id),
+    CONSTRAINT ck_tasks_room CHECK (action <> 'generate' OR room_id IS NOT NULL),
+    CONSTRAINT ck_tasks_cost CHECK ((actual_cost IS NULL AND cost_currency IS NULL) OR (actual_cost IS NOT NULL AND actual_cost >= 0 AND cost_currency IS NOT NULL)),
+    CONSTRAINT ck_tasks_times CHECK ((finished_at IS NULL OR finished_at >= created_at) AND (started_at IS NULL OR started_at >= created_at))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='识别/生成/编辑异步任务及失败、重试、成本记录';
+
+CREATE TABLE IF NOT EXISTS render_versions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id BIGINT UNSIGNED NOT NULL,
+    room_id BIGINT UNSIGNED NULL COMMENT '人工图编辑没有已选房间时可空',
+    task_id CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    image_asset_id BIGINT UNSIGNED NOT NULL,
+    parent_version_id BIGINT UNSIGNED NULL COMMENT '基于哪个成功版本继续修改；人工图编辑来源见任务source_asset_id',
+    version_no INT UNSIGNED NOT NULL COMMENT '项目内单调递增V01/V02，事务分配',
+    name VARCHAR(128) NOT NULL,
+    style_name VARCHAR(128) NULL,
+    origin ENUM('plan_generate','local_edit','restyle','human_reference_edit') NOT NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_versions_project_no (project_id, version_no),
+    UNIQUE KEY uk_versions_task (task_id),
+    KEY idx_versions_room (room_id, created_at),
+    CONSTRAINT fk_versions_project FOREIGN KEY (project_id) REFERENCES projects(id),
+    CONSTRAINT fk_versions_room FOREIGN KEY (room_id) REFERENCES rooms(id),
+    CONSTRAINT fk_versions_task FOREIGN KEY (task_id) REFERENCES model_tasks(id),
+    CONSTRAINT fk_versions_image FOREIGN KEY (image_asset_id) REFERENCES assets(id),
+    CONSTRAINT fk_versions_parent FOREIGN KEY (parent_version_id) REFERENCES render_versions(id),
+    CONSTRAINT ck_versions_no CHECK (version_no > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='只保存成功结果，编辑新增版本不覆盖历史';
+
+CREATE TABLE IF NOT EXISTS version_reviews (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    version_id BIGINT UNSIGNED NOT NULL,
+    reviewer_id BIGINT UNSIGNED NOT NULL,
+    structure_preserved BOOLEAN NULL COMMENT '结构与门窗保持；NULL未评价，0不通过，1通过',
+    layout_preserved BOOLEAN NULL,
+    usable_for_client BOOLEAN NULL,
+    edit_region_preserved BOOLEAN NULL COMMENT '局部修改的未选区域保持',
+    notes TEXT NULL COMMENT '错误类型、不可用原因和改进意见',
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_reviews_version_user (version_id, reviewer_id),
+    CONSTRAINT fk_reviews_version FOREIGN KEY (version_id) REFERENCES render_versions(id),
+    CONSTRAINT fk_reviews_user FOREIGN KEY (reviewer_id) REFERENCES users(id),
+    CONSTRAINT ck_reviews_flags CHECK ((structure_preserved IS NULL OR structure_preserved IN (0,1)) AND (layout_preserved IS NULL OR layout_preserved IN (0,1)) AND (usable_for_client IS NULL OR usable_for_client IN (0,1)) AND (edit_region_preserved IS NULL OR edit_region_preserved IN (0,1)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='PRD人工验收与前端结果核对';

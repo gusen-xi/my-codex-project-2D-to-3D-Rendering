@@ -1,7 +1,8 @@
-"""Open an existing local prototype or start it on the first available port."""
+"""Build React login and launch the Node API with its existing Python design service."""
 import json
+import os
 from pathlib import Path
-import socket
+import shutil
 import subprocess
 import sys
 import threading
@@ -9,34 +10,40 @@ import time
 import urllib.request
 import webbrowser
 
-root = Path(__file__).resolve().parents[1]
-for port in range(8766, 8790):
-    url = f'http://127.0.0.1:{port}'
-    try:
-        with urllib.request.urlopen(url + '/api/config', timeout=.5) as response:
-            if json.load(response).get('application') == 'wuyin-space':
-                webbrowser.open(url)
-                print('已打开正在运行的工作台：' + url)
-                sys.exit(0)
-    except Exception:
-        pass
-    with socket.socket() as probe:
-        if probe.connect_ex(('127.0.0.1', port)) != 0:
-            break
-else:
-    sys.exit('8766–8789 端口均被占用，请手动指定其他端口。')
+root=Path(__file__).resolve().parents[1]
+backend=root.parent/'backend'
+node=shutil.which('node')
+if not node:
+    bundled=Path.home()/'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node'
+    node=str(bundled) if bundled.exists() else None
+if not node:
+    sys.exit('需要Node.js 22+，请先安装Node.js。')
+url='http://127.0.0.1:8766'
+try:
+    with urllib.request.urlopen(url+'/health',timeout=1) as response:
+        if json.load(response).get('application')=='wuyin-node-backend':
+            webbrowser.open(url)
+            sys.exit(0)
+except (OSError,ValueError):
+    pass
+build=subprocess.run([node,str(root/'node_modules/vite/bin/vite.js'),'build'],cwd=root)
+if build.returncode:
+    sys.exit('前端构建失败，请先在fronted目录安装依赖。')
 
-def open_when_ready():
+def open_ready():
     for _ in range(40):
         try:
-            with urllib.request.urlopen(url + '/api/config', timeout=.5):
+            with urllib.request.urlopen(url+'/health',timeout=.5):
                 webbrowser.open(url)
                 return
-        except Exception:
+        except OSError:
             time.sleep(.25)
 
-threading.Thread(target=open_when_ready, daemon=True).start()
+threading.Thread(target=open_ready,daemon=True).start()
+env=os.environ.copy()
+env['PYTHON_COMMAND']=sys.executable
 try:
-    subprocess.run([sys.executable, str(root / 'server/app.py'), '--port', str(port)], cwd=root)
+    result=subprocess.run([node,str(backend/'src/server.js')],cwd=backend,env=env)
+    sys.exit(result.returncode)
 except KeyboardInterrupt:
     pass
