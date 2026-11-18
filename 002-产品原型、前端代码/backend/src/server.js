@@ -28,7 +28,7 @@ try {
     python.on('exit',code=>{if(code!==null && code!==0)console.error('Python设计服务已退出，请检查MySQL及Python依赖。');});
   }
   let ready=false;
-  for(let attempt=0;attempt<40;attempt++) {
+  for(let attempt=0;attempt<120;attempt++) {
     try {
       const response=await fetch(`http://127.0.0.1:${config.pythonPort}/api/config`,{signal:AbortSignal.timeout(500)});
       if(response.ok && (await response.json()).application==='wuyin-space') {ready=true;break;}
@@ -37,7 +37,8 @@ try {
     await new Promise(resolve=>setTimeout(resolve,250));
   }
   if(!ready)throw new Error('Python设计服务未就绪，请检查依赖与MySQL连接。');
-  const app=createApp({pool,pythonPort:config.pythonPort,frontendDir:dist});
+  const allowedOrigins=config.publicOrigin ? [new URL(config.publicOrigin).origin] : undefined;
+  const app=createApp({pool,pythonPort:config.pythonPort,frontendDir:dist,demoMode:config.demoMode,allowedOrigins});
   server=app.listen(config.port,config.host,()=>console.log(`无垠空间 JavaScript 后端：http://${config.host}:${config.port}`));
   server.on('error',()=>{console.error('网站端口不可用，请检查是否已有服务运行。');shutdown().finally(()=>process.exit(1));});
   for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>shutdown().finally(()=>process.exit(0)));

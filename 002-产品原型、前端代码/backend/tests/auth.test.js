@@ -109,3 +109,15 @@ test('rate limits excessive authentication attempts',async()=>{
   for(let i=0;i<61;i++)result=await request('/api/auth/login',{body:{}});
   assert.equal(result.status,429);
 });
+
+
+test('demo disables registration and enforces the cloud origin',async()=>{
+  const service=await start(createApp({pool,demoMode:true,allowedOrigins:['https://demo.zanegao.cn']}));
+  const url=`http://127.0.0.1:${service.address().port}`;
+  try {
+    assert.deepEqual((await request('/api/demo',{url})).data,{demoMode:true});
+    assert.equal((await request('/api/auth/register',{url,body:{username:'demo_new',password:'testpass123'},headers:{Origin:'https://demo.zanegao.cn'}})).status,403);
+    assert.equal((await request('/api/auth/login',{url,body:{username:'absent',password:'testpass123'},headers:{Origin:'https://demo.zanegao.cn'}})).status,401);
+    assert.equal((await request('/api/auth/login',{url,body:{},headers:{Origin:'https://evil.example'}})).status,403);
+  } finally { await new Promise(resolve=>service.close(resolve)); }
+});

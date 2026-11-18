@@ -35,7 +35,7 @@ OUTPUT = ROOT / 'outputs'
 WORK = ROOT / 'work'
 DB = Database()
 SERVICE = Path(os.environ.get('IMAGE_STYLE_SERVICE', str(Path.home() / '.codex/mcp-services/imageStyle-1.1.6')))
-PYTHON = SERVICE / '.venv/bin/python'
+PYTHON = Path(os.environ.get('IMAGE_STYLE_PYTHON', str(SERVICE / '.venv/bin/python')))
 MAX_BYTES = 25 * 1024 * 1024
 POOL = ThreadPoolExecutor(max_workers=2)
 LOCK = threading.RLock()
@@ -95,7 +95,10 @@ def local_image(url):
     if rel.startswith('/assets/'):
         base, suffix = PUBLIC / 'assets', rel[len('/assets/'):]
     elif rel.startswith('/outputs/'):
-        base, suffix = OUTPUT, rel[len('/outputs/'):]
+        path = DB.file(rel)
+        with Image.open(path) as im:
+            im.verify()
+        return path
     else:
         raise ValueError('图片来源不受支持。')
     path = (base / suffix).resolve()
@@ -385,9 +388,11 @@ class Handler(SimpleHTTPRequestHandler):
                 return
         if path == '/api/profile':
             avatar = OUTPUT / 'avatars' / f"{user['id']}.png"
+            DB.restore_file(avatar)
             return self.json_response({'avatar': f'/api/profile/avatar?v={avatar.stat().st_mtime_ns}' if avatar.exists() else None})
         if path == '/api/profile/avatar':
             avatar = OUTPUT / 'avatars' / f"{user['id']}.png"
+            DB.restore_file(avatar)
             if not avatar.exists():
                 return self.json_response({'error': '尚未上传头像'}, 404)
             raw = avatar.read_bytes()
@@ -462,6 +467,7 @@ class Handler(SimpleHTTPRequestHandler):
                     temp = folder / (uuid.uuid4().hex + '.tmp')
                     avatar.save(temp, format='PNG')
                     temp.replace(target)
+                    DB.persist_file(target)
                 except (OSError, Image.DecompressionBombError):
                     raise ValueError('头像无法读取，请选择有效图片。')
                 return self.json_response({'avatar': f'/api/profile/avatar?v={target.stat().st_mtime_ns}'})

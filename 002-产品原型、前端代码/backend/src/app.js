@@ -3,7 +3,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { authRoutes } from './auth.js';
 
-export function createApp({pool, pythonPort=8767, frontendDir, allowedOrigins=['http://127.0.0.1:8766','http://localhost:8766','http://127.0.0.1:5173','http://localhost:5173']}) {
+export function createApp({pool, pythonPort=8767, frontendDir, demoMode=false, allowedOrigins=['http://127.0.0.1:8766','http://localhost:8766','http://127.0.0.1:5173','http://localhost:5173']}) {
   const app=express();
   app.disable('x-powered-by');
   app.use((req,res,next)=>{
@@ -12,10 +12,11 @@ export function createApp({pool, pythonPort=8767, frontendDir, allowedOrigins=['
     next();
   });
   app.get('/health',async(req,res)=>{await pool.query('SELECT 1');res.json({application:'wuyin-node-backend',database:'mysql',status:'ok'});});
+  app.get('/api/demo',(req,res)=>res.json({demoMode}));
   app.use('/api/auth',(req,res,next)=>{
     if (req.method==='POST' && !req.is('application/json')) return res.status(415).json({error:'需要JSON请求。'});
     next();
-  },express.json({limit:'16kb'}),authRoutes(pool));
+  },express.json({limit:'16kb'}),authRoutes(pool,{demoMode}));
   // Existing design/model APIs remain in Python; it validates this backend's DB sessions.
   app.use((req,res,next)=>{
     if (!req.path.startsWith('/api/') && !req.path.startsWith('/outputs/')) return next();

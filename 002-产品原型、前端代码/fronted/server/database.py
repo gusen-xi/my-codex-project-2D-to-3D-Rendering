@@ -5,6 +5,8 @@ import json
 import hashlib
 import mimetypes
 import os
+import ssl
+import uuid
 from pathlib import Path
 import re
 
@@ -34,6 +36,8 @@ class Database:
                                user=os.environ.get('DB_USER', values.get('MYSQL_USER', 'wuyin')),
                                password=os.environ.get('DB_PASSWORD', values.get('MYSQL_PASSWORD', '')),
                                database=os.environ.get('DB_NAME', values.get('MYSQL_DATABASE', 'wuyin')))
+            if os.environ.get('DB_SSL') == '1':
+                self.config['ssl'] = ssl.create_default_context()
 
     @contextmanager
     def transaction(self):
@@ -61,6 +65,54 @@ class Database:
         with self.transaction() as c:
             c.execute('SELECT * FROM users WHERE username=%s', (username,))
             return c.fetchone()
+
+    def cloud_path(self, path):
+        path=Path(path).resolve()
+        base=(self.root/'outputs').resolve()
+        if not path.is_relative_to(base) or path.suffix.lower() not in ('.png','.jpg','.jpeg','.pdf'):
+            raise ValueError('云端文件路径无效。')
+        return path.relative_to(base).as_posix()
+
+    def persist_file(self, path, cursor=None):
+        if os.environ.get('CLOUD_FILES') != '1':
+            return
+        key=self.cloud_path(path)
+        if Path(path).stat().st_size > 50*1024*1024:
+            raise ValueError('云端体验版文件最大为 50 MB。')
+        if cursor is None:
+            with self.transaction() as c:
+                return self.persist_file(path,c)
+        # shortcut: small interview demo stores 1 MiB chunks in TiDB; use object storage at scale.
+        cursor.execute('DELETE FROM demo_file_chunks WHERE storage_path=%s',(key,))
+        with Path(path).open('rb') as source:
+            part=0
+            while raw := source.read(1024*1024):
+                cursor.execute('INSERT INTO demo_file_chunks(storage_path,part_no,content) VALUES (%s,%s,%s)',(key,part,raw))
+                part+=1
+
+    def restore_file(self, path):
+        if os.environ.get('CLOUD_FILES') != '1':
+            return
+        key=self.cloud_path(path)
+        path=Path(path)
+        if path.is_file():
+            return
+        with self.transaction() as c:
+            c.execute('SELECT part_no,content FROM demo_file_chunks WHERE storage_path=%s ORDER BY part_no',(key,))
+            chunks=c.fetchall()
+        if not chunks:
+            return
+        if [row['part_no'] for row in chunks] != list(range(len(chunks))) or sum(len(row['content']) for row in chunks)>50*1024*1024:
+            raise ValueError('云端文件不完整或过大。')
+        path.parent.mkdir(parents=True,exist_ok=True)
+        temp=path.with_name(path.name+'.'+uuid.uuid4().hex+'.tmp')
+        try:
+            with temp.open('wb') as target:
+                for row in chunks:
+                    target.write(row['content'])
+            temp.replace(path)
+        finally:
+            temp.unlink(missing_ok=True)
 
     def register(self, username, salt, digest):
         try:
@@ -128,7 +180,11 @@ class Database:
         else:
             raise ValueError('图片来源不受支持。')
         path = (base / suffix).resolve()
-        if not path.is_relative_to(base.resolve()) or not path.is_file():
+        if not path.is_relative_to(base.resolve()):
+            raise ValueError('图片路径无效。')
+        if url.startswith('/outputs/'):
+            self.restore_file(path)
+        if not path.is_file():
             raise ValueError('图片不存在。')
         return path
 
@@ -140,6 +196,8 @@ class Database:
             return row['id']
         if url.startswith('/outputs/') and not allow_new:
             raise ValueError('无权访问此图片。')
+        if url.startswith('/outputs/'):
+            self.persist_file(path, c)
         width = height = None
         if path.suffix.lower() != '.pdf':
             with Image.open(path) as image:
@@ -305,12 +363,22 @@ class Database:
     def new_job(self, user_id, job):
         data=job['request']
         with self.transaction() as c:
+            if os.environ.get('DEMO_MODE') == '1':
+                # Serialize all projects of this account before checking its lifetime quota.
+                c.execute('SELECT id FROM users WHERE id=%s FOR UPDATE',(user_id,))
+                if not c.fetchone():
+                    raise ValueError('体验账号不存在。')
             project=self.project(c,user_id,data.get('projectId'))
             c.execute('SELECT * FROM model_tasks WHERE project_id=%s AND request_id=%s',(project['id'],job['requestId']))
             old=c.fetchone()
             if old:
                 return self.job_dict(old),False
             action='analyze' if job['kind']=='analyze' else data.get('action','generate')
+            if os.environ.get('DEMO_MODE') == '1':
+                c.execute("SELECT COUNT(*) AS used FROM model_tasks WHERE requested_by=%s AND " +
+                          ("action='analyze'" if action=='analyze' else "action<>'analyze'"), (user_id,))
+                if c.fetchone()['used']:
+                    raise ValueError('本账号的一次' + ('识别' if action=='analyze' else '生图') + '体验已使用，刷新或重新登录不会重置。')
             if data.get('parentVersionId'):
                 c.execute('SELECT id FROM render_versions WHERE task_id=%s AND project_id=%s',(data['parentVersionId'],project['id']))
                 if not c.fetchone():

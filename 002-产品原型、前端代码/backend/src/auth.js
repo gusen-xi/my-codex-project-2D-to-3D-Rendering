@@ -8,7 +8,7 @@ const digest = token => createHash('sha256').update(token).digest('hex');
 const readToken = req => /^Bearer ([A-Za-z0-9_-]{43})$/.exec(req.headers.authorization || '')?.[1];
 const userView = user => ({ id: user.id, username: user.username });
 
-export function authRoutes(pool) {
+export function authRoutes(pool,{demoMode=false}={}) {
   const router = Router();
   const attempts = new Map();
   router.use((req,res,next) => {
@@ -35,6 +35,7 @@ export function authRoutes(pool) {
     return { username, password, valid: /^[\p{L}\p{N}_-]{3,32}$/u.test(username) && typeof password === 'string' && [...password].length >= 6 && [...password].length <= 64 };
   };
   router.post('/register', async(req,res) => {
+    if (demoMode) return res.status(403).json({error:'面试体验版暂不开放注册，请向作品作者领取独立体验账号。'});
     const { username,password,valid } = validate(req.body);
     if (!valid) return res.status(400).json({error:'用户名需为3-32位中文、字母、数字、下划线或连字符；密码需为6-64位。'});
     const salt = randomBytes(16).toString('hex');

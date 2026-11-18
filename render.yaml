@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: wuyin-interview-demo
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deployment/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: IMAGE_2_API_KEY
+        sync: false
+      - key: DEMO_ACCOUNTS
+        sync: false

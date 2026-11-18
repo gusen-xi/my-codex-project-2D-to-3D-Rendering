@@ -4,6 +4,9 @@ import hashlib
 import secrets
 from datetime import datetime, timedelta, timezone
 import io
+import os
+import sys
+from concurrent.futures import ThreadPoolExecutor
 import time
 import uuid
 import pymysql
@@ -80,6 +83,54 @@ class PrototypeTests(unittest.TestCase):
         buf = io.BytesIO()
         Image.new('RGB', (120, 80), 'white').save(buf, format='PNG')
         return buf.getvalue()
+
+    def test_demo_quota_concurrency_idempotency_and_restart(self):
+        from server.database import Database
+        _,user=self.authenticated_client('demo_quota')
+        projects=[self.db.create_project(user['id'],'quota '+str(i))['id'] for i in range(2)]
+        def job(project,kind='image'):
+            ident=uuid.uuid4().hex
+            return {'id':ident,'requestId':ident,'created':time.time(),'status':'queued','kind':kind,
+                    'request':{'projectId':project,'source':'/assets/plan.jpg','action':'restyle'}}
+        candidates=[job(project) for project in projects]
+        gate=threading.Barrier(2)
+        def submit(candidate):
+            gate.wait()
+            try:
+                return self.db.new_job(user['id'],candidate)
+            except ValueError:
+                return None
+        with patch.dict(os.environ,{'DEMO_MODE':'1'}):
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results=list(pool.map(submit,candidates))
+            self.assertEqual(sum(result is not None for result in results),1)
+            accepted=next(result[0] for result in results if result)
+            self.assertFalse(self.db.new_job(user['id'],accepted)[1])
+            accepted.update(status='failed',error='test failure')
+            self.db.save_job(accepted)
+            restarted=Database(self.db.config.copy(),root=self.root)
+            with self.assertRaises(ValueError):
+                restarted.new_job(user['id'],job(projects[1]))
+            self.assertTrue(restarted.new_job(user['id'],job(projects[0],'analyze'))[1])
+            with self.assertRaises(ValueError):
+                restarted.new_job(user['id'],job(projects[1],'analyze'))
+
+    def test_cloud_files_survive_restart_and_reject_external_paths(self):
+        from server.database import Database
+        sys.path.insert(0,str(Path(__file__).resolve().parents[3]))
+        from deployment.cloud_init import initialize
+        with patch.dict(os.environ,{'CLOUD_FILES':'1','DEMO_MODE':'0','DEMO_ACCOUNTS':'[]'}):
+            initialize(self.db)
+            target=self.output/'generated'/'durable.png'
+            raw=secrets.token_bytes(1024*1024+123)
+            target.write_bytes(raw)
+            self.db.persist_file(target)
+            target.unlink()
+            restarted=Database(self.db.config.copy(),root=self.root)
+            restarted.restore_file(target)
+            self.assertEqual(target.read_bytes(),raw)
+            with self.assertRaises(ValueError):
+                restarted.persist_file(self.root/'outside.png')
 
     def test_generation_specs_validation(self):
         self.assertEqual(server.generation_specs({'outputSize':'1024x1536','outputQuality':'high','roomLength':'5.2','roomWidth':3.6}), ('1024x1536','high','长5.2米；宽3.6米'))
